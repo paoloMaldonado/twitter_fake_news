@@ -5,7 +5,7 @@ import pandas
 def export_to_excel(df, path, column):
     # path without "/"
     splitted_path = path.split("/")[6:] # the 6 is an special case for this local pc
-    root_path     = path.split("/")[6:]
+    root_path     = path.split("/")[:6]
     # path without "data/"
     creation_path = '/'.join(root_path) + '/clean data/' + '/'.join(splitted_path[1:])
     # path without the name of the file 

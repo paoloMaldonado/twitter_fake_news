@@ -22,6 +22,10 @@ def lemmatizer(tokens_sentence, nlp_model):
             lst_lemma.append(word.lemma)
     return lst_lemma
 
+def join_tokens_into_sentence(tokens):
+    sentence = ' '.join(tokens)
+    return sentence
+
 def preprocess_data(document, stopwords_list, nlp_model=None, opt_lemmatization=False):
     # tokenization
     h1 = tokenizer_punct(document)
@@ -30,8 +34,6 @@ def preprocess_data(document, stopwords_list, nlp_model=None, opt_lemmatization=
     # lemmatization (optional)
     if opt_lemmatization == True and nlp_model != None:
         h3 = lemmatizer(h2, nlp_model)
-        h4 = ' '.join(h3)
-        return h4
+        return h3
     # join the tokens into one sentece
-    h3 = ' '.join(h2)  
-    return h3
+    return h2
