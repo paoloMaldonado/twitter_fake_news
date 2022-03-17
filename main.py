@@ -4,13 +4,16 @@ import nltk
 import pandas as pd
 import os
 
-def recursively_preprocess(path, content_column, stopwords, nlp_model = None, opt_lemmatization = None):
+import time
+from datetime import timedelta
+
+def recursively_preprocess(path, directory_to_export, content_column, sheet, stopwords, nlp_model = None, opt_replies = False, opt_lemmatization = False):
     os.chdir(path)
     d = os.listdir()
     for item in d:
         if(os.path.isdir(item)):
             p = path+'/'+item
-            recursively_preprocess(p, content_column, stopwords, nlp_model, opt_lemmatization)
+            recursively_preprocess(p, directory_to_export, content_column, sheet, stopwords, nlp_model, opt_replies, opt_lemmatization)
         else:
             # if the parent directory is Partidos Politicos
             if(path.split("/")[-1] == "Partidos Políticos"):
@@ -19,10 +22,10 @@ def recursively_preprocess(path, content_column, stopwords, nlp_model = None, op
                 # print the path
                 print(full_path)
                 # pre process the data
-                tw_data = preprocess_tweet(full_path, content_column, stopwords, nlp_model, opt_lemmatization)
+                tw_data = preprocess_tweet(full_path, content_column, sheet, stopwords, nlp_model, opt_replies, opt_lemmatization)
                 # export the clean data
                 if not tw_data.empty:
-                    export_to_excel(tw_data, full_path, column='clean_data')
+                    export_to_excel(tw_data, directory_to_export, full_path, column='clean_data')
     os.chdir("../")
     return
 
@@ -41,8 +44,14 @@ if __name__ == "__main__":
     # nlp_model = stanza.Pipeline(lang='es', processors='tokenize, mwt, pos, lemma', tokenize_pretokenized=True)
 
     path = "C:/Users/jorpa/Documents/ESAN/twitter_fakeNews/data"
-    content_column = "Content"
+    content_column = "texto"
+    sheet_name = 'Respuestas'
+    directory_to_export = "clean replies"
 
     # preprocess 
+    #start_time = time.monotonic()
     print("Starting preprocessing")
-    recursively_preprocess(path, content_column, stopwords)
+    recursively_preprocess(path, directory_to_export, content_column, sheet_name, stopwords, opt_replies=True)
+    #end_time = time.monotonic()
+
+    #print(timedelta(seconds=end_time - start_time))

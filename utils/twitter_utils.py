@@ -24,11 +24,16 @@ def hash_dict(df, hash_col):
     tag_dict = tag_counts['clean_tag'].to_dict()
     return tag_dict
 
-def clean_tweets(df, column_hashtags):
-    # Crear diccionario de hashtags
-    tag_dict = hash_dict(df,column_hashtags)
-    # Crear una columna con los tweets preprocesados
-    df = df.assign(clean_tw = df.Content.apply(lambda x: p.clean(str(x))))
-    # Reemplazar los hashtags
-    df = df.assign(clean_tw = df.clean_tw.replace(tag_dict, regex=True))
-    return df
+def clean_tweets(df, column_hashtags, opt_replies=False):
+    if opt_replies == False:
+        # Crear diccionario de hashtags
+        tag_dict = hash_dict(df,column_hashtags)
+        # Crear una columna con los tweets preprocesados
+        df = df.assign(clean_tw = df.Content.apply(lambda x: p.clean(str(x))))
+        # Reemplazar los hashtags
+        df = df.assign(clean_tw = df.clean_tw.replace(tag_dict, regex=True))
+        return df
+    else:
+        # Crear una columna con los tweets preprocesados
+        df = df.assign(clean_tw = df.texto.apply(lambda x: p.clean(str(x))))
+        return df
